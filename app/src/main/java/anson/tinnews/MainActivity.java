@@ -38,22 +38,7 @@ public class MainActivity extends AppCompatActivity {
         // update the title on the top while choosing different button on the bottom
         NavigationUI.setupActionBarWithNavController(this, navController);
 
-        NewsApi api = RetrofitClient.newInstance(this).create(NewsApi.class);
-        api.getTopHeadlines("US").enqueue(new Callback<NewsResponse>() {
-            @Override
-            public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
-                if (response.isSuccessful()) {
-                    Log.d("getTopHeadlines", response.body().toString());
-                } else {
-                    Log.d("getTopHeadlines", response.toString());
-                }
-            }
 
-            @Override
-            public void onFailure(Call<NewsResponse> call, Throwable t) {
-                Log.d("getTopHeadlines", t.toString());
-            }
-        });
 
     }
 
