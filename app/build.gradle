@@ -25,6 +25,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    // View Binding is a new tool allowing automatic binding UI layout resources
+    // with your Java/Kotlin code.
+    viewBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -56,5 +62,10 @@ dependencies {
     // Stetho: debugging tool
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
+    // Tinder Swipe View implementation is based on SwipePlaceHolderView
+    implementation 'com.mindorks:placeholderview:0.7.1'
+    // Import Picasso image downloading and caching library to handle image request
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 
 }
