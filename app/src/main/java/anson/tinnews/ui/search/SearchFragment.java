@@ -29,6 +29,7 @@ public class SearchFragment extends Fragment {
 
 
     @Override
+    // create a new screen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -36,6 +37,7 @@ public class SearchFragment extends Fragment {
     }
 
     @Override
+    // forms a new screen that covers old screen
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
