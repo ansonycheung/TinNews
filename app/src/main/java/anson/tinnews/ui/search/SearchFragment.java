@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.util.Log;
 import android.view.KeyEvent;
@@ -58,6 +59,24 @@ public class SearchFragment extends Fragment {
                 return false;
             }
         });
+
+        // Render data with Recycle
+        SearchNewsAdapter newsAdapter = new SearchNewsAdapter();
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+
+        // Implement the SpanSizeLookup for different grid size
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                // the first grid is double size
+                return position % 3 == 0 ? 2 : 1;
+            }
+        });
+
+        binding.recyclerView.setLayoutManager(gridLayoutManager);
+        binding.recyclerView.setAdapter(newsAdapter);
+
+
         NewsRepository repository = new NewsRepository(getContext());
         viewModel = new ViewModelProvider(this, new NewsViewModelFactory(repository))
                 .get(SearchViewModel.class);
@@ -68,6 +87,8 @@ public class SearchFragment extends Fragment {
                         newsResponse -> {
                             if (newsResponse != null) {
                                 Log.d("SearchFragment", newsResponse.toString());
+                                // setArticles
+                                newsAdapter.setArticles(newsResponse.articles);
                             }
                         });
     }
