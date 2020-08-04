@@ -1,10 +1,15 @@
 package anson.tinnews.repository;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import anson.tinnews.TinNewsApplication;
+import anson.tinnews.database.AppDatabase;
+import anson.tinnews.model.Article;
 import anson.tinnews.model.NewsResponse;
 import anson.tinnews.network.NewsApi;
 import anson.tinnews.network.RetrofitClient;
@@ -14,9 +19,14 @@ import retrofit2.Response;
 
 public class NewsRepository {
     private final NewsApi newsApi;
+    private final AppDatabase database;
+    private AsyncTask asyncTask;
+
 
     public NewsRepository(Context context) {
         newsApi = RetrofitClient.newInstance(context).create(NewsApi.class);
+        database = TinNewsApplication.getDatabase();
+
     }
 
     // Implement getTopHeadlines API in NewsRepository
@@ -63,6 +73,37 @@ public class NewsRepository {
                         });
         return everyThingLiveData;
     }
+
+    public LiveData<Boolean> favoriteArticle(Article article) {
+                MutableLiveData<Boolean> isSuccessLiveData = new MutableLiveData<>();
+                asyncTask =
+                                new AsyncTask<Void, Void, Boolean>() {
+                    @Override
+                    protected Boolean doInBackground(Void... voids) {
+                                                try {
+                                                        database.dao().saveArticle(article);
+                                                    } catch (Exception e) {
+                                                        Log.e("test", e.getMessage());
+                                                        return false;
+                                                    }
+                                                return true;
+                                            }
+
+                            @Override
+                    protected void onPostExecute(Boolean isSuccess) {
+                                               article.favorite = isSuccess;
+                                               isSuccessLiveData.setValue(isSuccess);
+                                           }
+                }.execute();
+                return isSuccessLiveData;
+            }
+
+            public void onCancel() {
+                if (asyncTask != null) {
+                        asyncTask.cancel(true);
+                    }
+            }
+
 
 
 
