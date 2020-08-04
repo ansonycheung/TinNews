@@ -14,5 +14,6 @@ public interface NewsApi {
 
     @GET("everything")
         // https://newsapi.org/docs/endpoints/everything
+        // https://newsapi.org/v2/everything?q=bitcoin&apiKey=#yourapiKey#
     Call<NewsResponse> getEverything(@Query("q") String query, @Query("pageSize") int pageSize);
 }
