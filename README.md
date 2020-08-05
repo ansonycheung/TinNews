@@ -1,6 +1,6 @@
 # TinNews
 
-Tinnews Project: a Tinder-like News App 
+Mobile App Project: a Tinder-like News App 
 <ul>
   <li>Designed the Instagram Flavor News app based on Google Component Architectural MVVM Pattern</li>
   <li>Implemented the bottom bar & page navigation using JetPack navigation component</li>
