@@ -10,6 +10,7 @@ import anson.tinnews.model.NewsResponse;
 import anson.tinnews.repository.NewsRepository;
 
 public class HomeViewModel extends ViewModel {
+
     private final NewsRepository newsRepository;
     private final MutableLiveData<String> countryInput = new MutableLiveData<>();
     // receive favorite Article

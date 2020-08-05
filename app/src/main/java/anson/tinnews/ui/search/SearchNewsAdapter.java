@@ -19,7 +19,17 @@ import anson.tinnews.R;
 import anson.tinnews.model.Article;
 
 public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.SearchNewsViewHolder> {
+    interface LikeListener {
+        void onLike(Article article);
+        void onClick(Article article);
+    }
+
     private List<Article> articles = new LinkedList<>();
+    private LikeListener likeListener;
+
+    public void setLikeListener(LikeListener likeListener) {
+        this.likeListener = likeListener;
+    }
 
     // Add setArticles for setting new datas
     public void setArticles(List<Article> articles) {
@@ -39,7 +49,7 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
         // for test
         Log.d("Test", "onCreateViewHolder" + viewHolder.toString());
 
-        return new SearchNewsViewHolder(view);
+        return viewHolder;
     }
 
     @Override
@@ -50,8 +60,25 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
 
         Article article = articles.get(position);
         holder.title.setText(article.title);
-        Picasso.get().load(article.urlToImage).into(holder.newsImage);
-        holder.favorite.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+
+        if (article.urlToImage == null) {
+            holder.newsImage.setImageResource(R.drawable.ic_empty_image);
+        } else {
+            Picasso.get().load(article.urlToImage).into(holder.newsImage);
+        }
+
+        // Hook the LikeListener in SearchNewsAdapter
+        if (article.favorite) {
+            holder.favorite.setImageResource(R.drawable.ic_favorite_black_24dp);
+            // already favorite news do not need to click favorite to avoid duplicate
+            holder.favorite.setOnClickListener(null);
+        } else {
+            holder.favorite.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            holder.favorite.setOnClickListener(v -> {
+                article.favorite = true;
+                likeListener.onLike(article);
+            });
+        }
     }
 
     @Override

@@ -15,11 +15,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import anson.tinnews.R;
 import anson.tinnews.databinding.FragmentSearchBinding;
+import anson.tinnews.model.Article;
 import anson.tinnews.repository.NewsRepository;
 import anson.tinnews.repository.NewsViewModelFactory;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,19 +53,20 @@ public class SearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // add SoftKeyboard Enter Listener to handle enter event
-        binding.searchView.setOnEditorActionListener((v, actionId, event) -> {
-            String searchText = binding.searchView.getText().toString();
-            if (actionId == EditorInfo.IME_ACTION_DONE && !searchText.isEmpty()) {
-                viewModel.setSearchInput(searchText);
-                return true;
-            } else {
-                return false;
+        // Render data with Recycle
+        // Setup the LikeListener in SearchFragment and pass it to SearchNewsAdapter
+        SearchNewsAdapter newsAdapter = new SearchNewsAdapter();
+        newsAdapter.setLikeListener(new SearchNewsAdapter.LikeListener() {
+            @Override
+            public void onLike(Article article) {
+                viewModel.setFavoriteArticleInput(article);
+            }
+
+            @Override
+            public void onClick(Article article) {
+                // TODO
             }
         });
-
-        // Render data with Recycle
-        SearchNewsAdapter newsAdapter = new SearchNewsAdapter();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
 
         // Implement the SpanSizeLookup for different grid size
@@ -76,6 +81,16 @@ public class SearchFragment extends Fragment {
         binding.recyclerView.setLayoutManager(gridLayoutManager);
         binding.recyclerView.setAdapter(newsAdapter);
 
+        // add SoftKeyboard Enter Listener to handle enter event
+        binding.searchView.setOnEditorActionListener((v, actionId, event) -> {
+            String searchText = binding.searchView.getText().toString();
+            if (actionId == EditorInfo.IME_ACTION_DONE && !searchText.isEmpty()) {
+                viewModel.setSearchInput(searchText);
+                return true;
+            } else {
+                return false;
+            }
+        });
 
         NewsRepository repository = new NewsRepository(getContext());
         viewModel = new ViewModelProvider(this, new NewsViewModelFactory(repository))
@@ -91,6 +106,26 @@ public class SearchFragment extends Fragment {
                                 newsAdapter.setArticles(newsResponse.articles);
                             }
                         });
+        viewModel
+                .onFavorite()
+                .observe(
+                        getViewLifecycleOwner(),
+                        isSuccess -> {
+                            if (isSuccess) {
+                                Toast.makeText(requireActivity(), "Success", LENGTH_SHORT).show();
+                                newsAdapter.notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(requireActivity(), "You might have liked before", LENGTH_SHORT).show();
+                            }
+                        });
     }
+
+    @Override
+    // Call onCancel in the onDestroyView
+    public void onDestroyView() {
+        super.onDestroyView();
+        viewModel.onCancel();
+    }
+
 
 }

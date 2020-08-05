@@ -38,7 +38,6 @@ public class TinNewsCard {
     public TinNewsCard(Article news, OnSwipeListener onSwipeListener) {
         this.article = news;
         this.onSwipeListener = onSwipeListener;
-
     }
 
     // @Resolve annotation binds a method to be executed when the view is ready to be used.
@@ -75,6 +74,7 @@ public class TinNewsCard {
         onSwipeListener.onLike(article);
     }
 
+    // callback
     interface OnSwipeListener {
         void onLike(Article news);
         void onDisLike(Article news);

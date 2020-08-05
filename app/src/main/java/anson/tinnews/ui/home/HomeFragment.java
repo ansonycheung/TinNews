@@ -35,11 +35,15 @@ public class HomeFragment extends Fragment implements TinNewsCard.OnSwipeListene
     // Implement the CallBack
     public void onLike(Article news) {
         viewModel.setFavoriteArticleInput(news);
+        if (binding.swipeView.getChildCount() < 3) {
+            viewModel.setCountryInput("us");
+        }
     }
 
     @Override
     // Implement the CallBack
     public void onDisLike(Article news) {
+        // output news if less than 3
         if (binding.swipeView.getChildCount() < 3) {
             viewModel.setCountryInput("us");
         }
@@ -115,6 +119,5 @@ public class HomeFragment extends Fragment implements TinNewsCard.OnSwipeListene
                                 Toast.makeText(getContext(), "You might have liked before", LENGTH_SHORT).show();
                             }
                         });
-
     }
 }
