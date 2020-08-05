@@ -19,6 +19,7 @@ import retrofit2.Response;
 
 public class NewsRepository {
     private final NewsApi newsApi;
+    // Integrate the Room into the MVVM Architecture Repository
     private final AppDatabase database;
     private AsyncTask asyncTask;
 

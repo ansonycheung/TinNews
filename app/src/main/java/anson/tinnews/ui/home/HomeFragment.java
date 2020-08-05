@@ -11,22 +11,46 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.mindorks.placeholderview.SwipeDecor;
 
-import anson.tinnews.R;
 import anson.tinnews.databinding.FragmentHomeBinding;
 import anson.tinnews.model.Article;
 import anson.tinnews.repository.NewsRepository;
 import anson.tinnews.repository.NewsViewModelFactory;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements TinNewsCard.OnSwipeListener {
 
     private HomeViewModel viewModel;
     private FragmentHomeBinding binding;
+
+    @Override
+    // Implement the CallBack
+    public void onLike(Article news) {
+        viewModel.setFavoriteArticleInput(news);
+    }
+
+    @Override
+    // Implement the CallBack
+    public void onDisLike(Article news) {
+        if (binding.swipeView.getChildCount() < 3) {
+            viewModel.setCountryInput("us");
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        viewModel.onCancel();
+    }
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -55,11 +79,10 @@ public class HomeFragment extends Fragment {
                 .getBuilder()
                 .setDisplayViewCount(3)
                 .setSwipeDecor(new SwipeDecor().setPaddingTop(20)
-                .setRelativeScale(0.01f));
+                        .setRelativeScale(0.01f));
 
         binding.rejectBtn.setOnClickListener(v -> binding.swipeView.doSwipe(false));
         binding.acceptBtn.setOnClickListener(v -> binding.swipeView.doSwipe(true));
-
 
 
         NewsRepository repository = new NewsRepository(getContext());
@@ -75,9 +98,21 @@ public class HomeFragment extends Fragment {
                                 Log.d("HomeFragment", newsResponse.toString());
                                 // Retrofit Response and add to the PlaceHolderView
                                 for (Article article : newsResponse.articles) {
-                                    TinNewsCard tinNewsCard = new TinNewsCard(article);
+                                    // Observer the changes from the HomeFragment ’s onViewCreated
+                                    TinNewsCard tinNewsCard = new TinNewsCard(article, this);
                                     binding.swipeView.addView(tinNewsCard);
                                 }
+                            }
+                        });
+        viewModel
+                .onFavorite()
+                .observe(
+                        getViewLifecycleOwner(),
+                        isSuccess -> {
+                            if (isSuccess) {
+                                Toast.makeText(getContext(), "Success", LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "You might have liked before", LENGTH_SHORT).show();
                             }
                         });
 
