@@ -7,6 +7,8 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.List;
+
 import anson.tinnews.TinNewsApplication;
 import anson.tinnews.database.AppDatabase;
 import anson.tinnews.model.Article;
@@ -76,36 +78,46 @@ public class NewsRepository {
     }
 
     public LiveData<Boolean> favoriteArticle(Article article) {
-                MutableLiveData<Boolean> isSuccessLiveData = new MutableLiveData<>();
-                asyncTask =
-                                new AsyncTask<Void, Void, Boolean>() {
+        MutableLiveData<Boolean> isSuccessLiveData = new MutableLiveData<>();
+        asyncTask =
+                new AsyncTask<Void, Void, Boolean>() {
                     @Override
                     protected Boolean doInBackground(Void... voids) {
-                                                try {
-                                                        database.dao().saveArticle(article);
-                                                    } catch (Exception e) {
-                                                        Log.e("test", e.getMessage());
-                                                        return false;
-                                                    }
-                                                return true;
-                                            }
-
-                            @Override
-                    protected void onPostExecute(Boolean isSuccess) {
-                                               article.favorite = isSuccess;
-                                               isSuccessLiveData.setValue(isSuccess);
-                                           }
-                }.execute();
-                return isSuccessLiveData;
-            }
-
-            public void onCancel() {
-                if (asyncTask != null) {
-                        asyncTask.cancel(true);
+                        try {
+                            database.dao().saveArticle(article);
+                        } catch (Exception e) {
+                            Log.e("test", e.getMessage());
+                            return false;
+                        }
+                        return true;
                     }
-            }
+
+                    @Override
+                    protected void onPostExecute(Boolean isSuccess) {
+                        article.favorite = isSuccess;
+                        isSuccessLiveData.setValue(isSuccess);
+                    }
+                }.execute();
+        return isSuccessLiveData;
+    }
+
+    // get saved articles
+    public LiveData<List<Article>> getAllSavedArticles() {
+        return database.dao().getAllArticles();
+    }
+
+    // delete saved article
+    public void deleteSavedArticle(Article article) {
+        AsyncTask.execute(
+                () -> database.dao().deleteArticle(article));
+    }
 
 
+    public void onCancel() {
+        if (asyncTask != null) {
+            asyncTask.cancel(true);
+        }
+    }
 
 
 }
