@@ -79,6 +79,12 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
                 likeListener.onLike(article);
             });
         }
+
+        // link to detail page
+        holder.itemView.setOnClickListener(
+                v -> {
+                    likeListener.onClick(article);
+                });
     }
 
     @Override

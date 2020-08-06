@@ -14,17 +14,56 @@
         android:id="@+id/navigation_search"
         android:name="anson.tinnews.ui.search.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_title_search_to_detail"
+            app:destination="@+id/navigation_detail"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right">
+            <argument
+                android:name="article"
+                android:defaultValue="@null"
+                app:argType="anson.tinnews.model.Article"
+                app:nullable="true" />
+        </action>
+    </fragment>
+
     <fragment
         android:id="@+id/navigation_save"
         android:name="anson.tinnews.ui.save.SaveFragment"
         android:label="fragment_save"
-        tools:layout="@layout/fragment_save" />
+        tools:layout="@layout/fragment_save">
+        <action
+            android:id="@+id/action_title_save_to_detail"
+            app:destination="@+id/navigation_detail"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right">
+            <argument
+                android:name="article"
+                android:defaultValue="@null"
+                app:argType="anson.tinnews.model.Article"
+                app:nullable="true" />
+        </action>
+    </fragment>
+
     <fragment
         android:id="@+id/navigation_detail"
         android:name="anson.tinnews.ui.detail.SavedNewsDetailFragment"
         android:label="@string/title_detail"
-        tools:layout="@layout/fragment_saved_news_detail" />
-
-
+        tools:layout="@layout/fragment_saved_news_detail" >
+        <argument
+            android:name="article"
+            android:defaultValue="@null"
+            app:argType="anson.tinnews.model.Article"
+            app:nullable="true" />
+    </fragment>
 </navigation>
+
+    <!--    Destination: The resource ID of the target destination. (app:destination)-->
+    <!--    Default arguments: An android.os.Bundle containing default values
+                                for the target destination, if supplied.-->
+    <!--    Navigation options: Navigation options, represented as NavOptions.
+                                This class contains all of the special configuration for transitioning
+                                to and back from the target destination, including animation resource
+                                 configuration, pop behavior, and whether the destination should
+                                  be launched in single top mode. (app:enterAnim & app:exitAnim)-->
