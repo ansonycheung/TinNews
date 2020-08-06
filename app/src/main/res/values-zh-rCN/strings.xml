@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    support internationalization (I18N)-->
+    <string name="unknown_author">未知作者</string>
+    <string name="description">描述:</string>
+    <string name='author'>作者:</string>
+</resources>

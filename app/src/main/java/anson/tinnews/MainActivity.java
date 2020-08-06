@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         // link center to bottom
         NavigationUI.setupWithNavController(navigationView, navController);
         // update the title on the top while choosing different button on the bottom
-        NavigationUI.setupActionBarWithNavController(this, navController);
+//        NavigationUI.setupActionBarWithNavController(this, navController);
 
 
 
